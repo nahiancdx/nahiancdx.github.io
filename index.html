@@ -145,13 +145,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 50px;
+    
    
 
       background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px); /* Safari */
   }
+
+
+  @media (min-width: 1024px) {
+  .desktop-featured img {
+   .nav {
+    padding: 24px 50px;
+   }
+  }
+}
 
   .nav-logo {
     font-family: var(--font-display);
