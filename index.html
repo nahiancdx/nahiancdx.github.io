@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nahian — WordPress Development & CRO</title>
+<title>Nahian — WordPress Dev & CRO</title>
 <meta name="description" content="WordPress sites that load fast and convert — built and optimized by one person, not an agency.">
 
 <!--
@@ -145,16 +145,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 20px;
-    background: transparent;
+    padding: 24px 50px;
+   
+
+      background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari */
   }
 
   .nav-logo {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 22px;
+    font-size: 25px;
     letter-spacing: 1.2px;
-    text-transform: uppercase;
+   
     color: var(--on-primary);
     text-decoration: none;
   }
@@ -267,6 +271,8 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
+
+   
   }
 
   .backdrop.open { opacity: 1; pointer-events: auto; }
@@ -534,7 +540,7 @@
 
 <!-- ============ NAV ============ -->
 <nav class="nav" aria-label="Primary">
-  <a href="#top" class="nav-logo">Nahian</a>
+  <a href="#top" class="nav-logo">nahian.</a>
   <ul class="nav-links">
     <li><a href="#work">Work</a></li>
     <li><a href="#services">Services</a></li>
