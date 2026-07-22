@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nahian — WordPress Developer & CRO Specialist</title>
+  <meta name="description" content="High-performance WordPress sites that load fast and convert. Technical SEO, code-level speed optimization, and CRO by a solo specialist.">
+
+  <!-- =========================================================================
+    PERFORMANCE & ASSET PRELOADING
+    ========================================================================= -->
+  <!-- Preload fonts to avoid layout shifts (CLS) & ensure fast LCP rendering -->
+  <!-- PLACEHOLDER FONT PRELOADS: Replace href with actual self-hosted font paths -->
+  <link rel="preload" href="/fonts/berkeley-mono-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/berkeley-mono-bold.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Preload hero image for LCP -->
+  <!-- PLACEHOLDER IMAGE PRELOAD: Adjust href to point to actual compressed WebP/AVIF hero asset -->
+  <link rel="preload" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1350' viewBox='0 0 1080 1350'><rect width='100%' height='100%' fill='%23201d1d'/></svg>" as="image" media="(max-width: 1023px)">
+
+  <style>
+    /* =========================================================================
+       1. DESIGN SYSTEM & TOKENS
+       ========================================================================= */
+    @font-face {
+      font-family: 'Berkeley Mono';
+      src: url('/fonts/berkeley-mono-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Berkeley Mono';
+      src: url('/fonts/berkeley-mono-bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      /* Colors */
+      --canvas: #fdfcfc;
+      --surface-soft: #f8f7f7;
+      --surface-card: #f1eeee;
+      --surface-dark: #201d1d;
+      --surface-dark-elevated: #302c2c;
+      --ink: #201d1d;
+      --ink-deep: #0f0000;
+      --body-text: #424245;
+      --mute: #646262;
+      --stone: #6e6e73;
+      --ash: #9a9898;
+      --hairline: rgba(15,0,0,0.12);
+      --hairline-strong: #646262;
+      --on-dark: #fdfcfc;
+      --on-dark-mute: #9a9898;
+      --accent: #007aff;
+      --accent-hover: #0056b3;
+
+      /* Typography Stack */
+      --font-mono: 'Berkeley Mono', ui-monospace, "SF Mono", "JetBrains Mono", Consolas, monospace;
+
+      /* Layout Rhythm */
+      --section-spacing: 56px;
+      --container-max: 1200px;
+      --radius: 4px;
+    }
+
+    @media (min-width: 1024px) {
+      :root {
+        --section-spacing: 96px;
+      }
+    }
+
+    /* Reset & Base Setup */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--canvas);
+      color: var(--body-text);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    a:hover, a:focus-visible {
+      color: var(--accent);
+    }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    img, picture, svg {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    /* Typography Utilities */
+    .section-title {
+      font-size: 16px;
+      line-height: 1.5;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .section-title::before {
+      content: "[+] ";
+      color: var(--mute);
+    }
+
+    /* Button System */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      padding: 4px 20px;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      line-height: 2;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--ink);
+      color: var(--canvas);
+      border-color: var(--ink);
+    }
+
+    .btn-primary:hover, .btn-primary:focus-visible {
+      background-color: var(--surface-dark-elevated);
+      color: var(--on-dark);
+      border-color: var(--surface-dark-elevated);
+    }
+
+    .btn-secondary {
+      background-color: var(--canvas);
+      color: var(--ink);
+      border-color: var(--hairline-strong);
+    }
+
+    .btn-secondary:hover, .btn-secondary:focus-visible {
+      background-color: var(--surface-card);
+      border-color: var(--ink);
+    }
+
+    /* =========================================================================
+       2. HEADER & NAVIGATION
+       ========================================================================= */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(253, 252, 252, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--hairline);
+      height: 64px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .brand-logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    /* Desktop Navigation */
+    .desktop-nav {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-nav {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .desktop-nav a {
+        font-size: 16px;
+        color: var(--body-text);
+        font-weight: 400;
+      }
+
+      .desktop-nav a:hover {
+        color: var(--ink);
+      }
+    }
+
+    /* Hamburger Toggle Button */
+    .hamburger-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    @media (min-width: 1024px) {
+      .hamburger-btn {
+        display: none;
+      }
+    }
+
+    /* Mobile Flyout Menu */
+    .flyout-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 400px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: var(--surface-dark);
+      color: var(--on-dark);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      box-shadow: -8px 0 24px rgba(0,0,0,0.3);
+    }
+
+    .flyout-menu.is-active {
+      transform: translateX(0);
+    }
+
+    .flyout-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+
+    .close-btn {
+      background: none;
+      border: 1px solid var(--hairline-strong);
+      color: var(--on-dark);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      padding: 4px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .flyout-links {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: auto;
+    }
+
+    .flyout-links a {
+      color: var(--on-dark);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .flyout-footer {
+      padding-top: 24px;
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .flyout-footer .btn {
+      width: 100%;
+      background-color: var(--canvas);
+      color: var(--ink);
+    }
+
+    .menu-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .menu-backdrop.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* =========================================================================
+       3. HERO SECTION
+       ========================================================================= */
+    .hero-section {
+      padding-top: 40px;
+      padding-bottom: var(--section-spacing);
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-section {
+        padding-top: 80px;
+      }
+      .hero-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: center;
+        gap: 48px;
+      }
+    }
+
+    /* Mobile Full-Bleed Overlay Style */
+    @media (max-width: 1023px) {
+      .hero-section {
+        background: linear-gradient(180deg, rgba(32,29,29,0.92) 0%, rgba(32,29,29,0.96) 100%),
+                    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1350' viewBox='0 0 1080 1350'><rect width='100%' height='100%' fill='%23201d1d'/></svg>");
+        background-size: cover;
+        background-position: center;
+        color: var(--on-dark);
+        border-bottom: 1px solid var(--surface-dark-elevated);
+      }
+
+      .hero-section .hero-title,
+      .hero-section .hero-subhead {
+        color: var(--on-dark);
+      }
+
+      .hero-section .hero-subhead {
+        color: var(--on-dark-mute);
+      }
+
+      .hero-section .btn-secondary {
+        background-color: transparent;
+        color: var(--on-dark);
+        border-color: var(--ash);
+      }
+
+      .hero-section .btn-primary {
+        background-color: var(--canvas);
+        color: var(--ink);
+        border-color: var(--canvas);
+      }
+
+      .hero-trust-text {
+        color: var(--on-dark-mute) !important;
+      }
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.5;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-subhead {
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--body-text);
+      margin-bottom: 32px;
+      max-width: 580px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .hero-trust-text {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--mute);
+    }
+
+    /* Hero Terminal Panel (Desktop Right Column / Mobile Visual) */
+    .terminal-panel {
+      background-color: var(--surface-dark);
+      border: 1px solid var(--surface-dark-elevated);
+      border-radius: var(--radius);
+      padding: 24px;
+      color: var(--on-dark);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1023px) {
+      .terminal-panel {
+        display: none; /* Substituted by mobile background scrim */
+      }
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--surface-dark-elevated);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      color: var(--on-dark-mute);
+    }
+
+    .terminal-code {
+      color: #a9b7c6;
+    }
+
+    .terminal-code .keyword { color: #cc7832; }
+    .terminal-code .string { color: #6a8759; }
+    .terminal-code .number { color: #6897bb; }
+    .terminal-code .comment { color: var(--on-dark-mute); }
+
+    /* =========================================================================
+       4. PROOF BAR
+       ========================================================================= */
+    .proof-section {
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      background-color: var(--surface-soft);
+      padding: 32px 0;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .proof-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .proof-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proof-value {
+      font-size: clamp(28px, 3vw, 36px);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .proof-label {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--mute);
+      margin-top: 4px;
+    }
+
+    /* =========================================================================
+       5. THE GAP YOU FILL (PROBLEM FRAMING)
+       ========================================================================= */
+    .gap-section {
+      padding: var(--section-spacing) 0;
+    }
+
+    .gap-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .gap-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .gap-card {
+      background-color: var(--surface-card);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .gap-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .gap-list {
+      list-style: none;
+    }
+
+    .gap-list li {
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .gap-list.agency li::before {
+      content: "[-]";
+      position: absolute;
+      left: 0;
+      color: var(--stone);
+    }
+
+    .gap-list.solo li::before {
+      content: "[+]";
+      position: absolute;
+      left: 0;
+      color: var(--ink);
+    }
+
+    /* =========================================================================
+       6. WHAT YOU DO — 3 PILLARS
+       ========================================================================= */
+    .pillars-section {
+      padding-bottom: var(--section-spacing);
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      .pillars-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .pillar-card {
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      padding: 32px;
+      background-color: var(--canvas);
+    }
+
+    .pillar-num {
+      font-size: 14px;
+      color: var(--mute);
+      margin-bottom: 16px;
+    }
+
+    .pillar-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .pillar-desc {
+      font-size: 16px;
+      color: var(--body-text);
+      line-height: 1.5;
+    }
+
+    /* =========================================================================
+       7. CASE STUDIES
+       ========================================================================= */
+    .cases-section {
+      padding-bottom: var(--section-spacing);
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    @media (min-width: 1024px) {
+      .cases-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .case-card {
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background-color: var(--surface-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .case-image-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: var(--surface-dark);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .case-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .case-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .case-client {
+      font-size: 14px;
+      color: var(--mute);
+      margin-bottom: 8px;
+    }
+
+    .case-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .case-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .metric-label {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--mute);
+    }
+
+    /* =========================================================================
+       8. PROCESS
+       ========================================================================= */
+    .process-section {
+      padding-bottom: var(--section-spacing);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .process-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .process-step {
+      border-top: 2px solid var(--ink);
+      padding-top: 16px;
+    }
+
+    .step-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--mute);
+      margin-bottom: 8px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 16px;
+      color: var(--body-text);
+    }
+
+    /* =========================================================================
+       9. FOUNDER BAR
+       ========================================================================= */
+    .founder-section {
+      padding-bottom: var(--section-spacing);
+    }
+
+    .founder-card {
+      border: 1px solid var(--hairline);
+      background-color: var(--surface-soft);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .founder-card {
+        grid-template-columns: 120px 1fr;
+        align-items: center;
+      }
+    }
+
+    .founder-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius);
+      background-color: var(--surface-dark);
+      border: 1px solid var(--hairline);
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .founder-bio {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--body-text);
+    }
+
+    .founder-name {
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 12px;
+      display: block;
+    }
+
+    /* =========================================================================
+       10. CLOSING CTA & FOOTER
+       ========================================================================= */
+    .cta-section {
+      background-color: var(--surface-dark);
+      color: var(--on-dark);
+      padding: var(--section-spacing) 0;
+      border-radius: var(--radius);
+      margin-bottom: 48px;
+    }
+
+    .cta-inner {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 700;
+      color: var(--on-dark);
+      margin-bottom: 16px;
+    }
+
+    .cta-desc {
+      font-size: 16px;
+      color: var(--on-dark-mute);
+      margin-bottom: 32px;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .cta-actions .btn-primary {
+      background-color: var(--canvas);
+      color: var(--ink);
+      border-color: var(--canvas);
+    }
+
+    .cta-actions .btn-secondary {
+      background-color: transparent;
+      color: var(--on-dark);
+      border-color: var(--ash);
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--hairline);
+      padding: 32px 0 48px 0;
+      font-size: 14px;
+      line-height: 2;
+      color: var(--mute);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: space-between;
+    }
+
+    @media (min-width: 768px) {
+      .footer-inner {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================
+    HEADER / NAVIGATION
+    ========================================================================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="brand-logo" aria-label="Nahian Home">NAHIAN</a>
+
+      <nav class="desktop-nav" aria-label="Main Navigation">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button class="hamburger-btn" id="openMenuBtn" aria-expanded="false" aria-controls="flyoutMenu" aria-label="Open menu">
+        [=] MENU
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Flyout Navigation -->
+  <div class="menu-backdrop" id="menuBackdrop" tabindex="-1"></div>
+  <aside class="flyout-menu" id="flyoutMenu" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+    <div class="flyout-header">
+      <button class="close-btn" id="closeMenuBtn" aria-label="Close menu">[X] CLOSE</button>
+    </div>
+    <nav class="flyout-links">
+      <a href="#work" class="flyout-link">Work</a>
+      <a href="#services" class="flyout-link">Services</a>
+      <a href="#process" class="flyout-link">Process</a>
+      <a href="#about" class="flyout-link">About</a>
+      <a href="#contact" class="flyout-link">Contact</a>
+    </nav>
+    <div class="flyout-footer">
+      <!-- PLACEHOLDER CONTACT LINK: Update tel number -->
+      <a href="tel:+1234567890" class="btn">[#] CALL DIRECTLY</a>
+    </div>
+  </aside>
+
+  <main>
+    <!-- =========================================================================
+      HERO SECTION
+      ========================================================================= -->
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <!-- PLACEHOLDER COPY: Hero Headline -->
+          <h1 class="hero-title">WordPress sites that load fast and convert.</h1>
+          <!-- PLACEHOLDER COPY: Subhead -->
+          <p class="hero-subhead">
+            Engineered and optimized by one person — not an agency layer. Code-level speed tuning, high-conversion architecture, zero bloat.
+          </p>
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Book Technical Audit</a>
+            <a href="#work" class="btn btn-secondary">View Case Studies</a>
+          </div>
+          <p class="hero-trust-text">[+] 100% direct developer access. No account managers.</p>
+        </div>
+
+        <!-- Desktop Right Column Visual Panel -->
+        <!-- PLACEHOLDER IMAGE: Hero — desktop right panel. 
+             Replace below terminal markup with a 1200x1400px optimized WebP screenshot if preferred. -->
+        <div class="terminal-panel" aria-hidden="true">
+          <div class="terminal-header">
+            <span>performance_audit.ts</span>
+            <span>Lighthouse: 100/100</span>
+          </div>
+          <pre class="terminal-code"><code><span class="comment">// Audit target: WordPress Core + WooCommerce</span>
+<span class="keyword">const</span> metrics = {
+  <span class="string">"LCP"</span>: <span class="string">"0.42s"</span>,
+  <span class="string">"FID"</span>: <span class="string">"2ms"</span>,
+  <span class="string">"CLS"</span>: <span class="number">0.00</span>,
+  <span class="string">"Conversion_Lift"</span>: <span class="string">"+34.2%"</span>
+};
+
+<span class="keyword">function</span> <span class="keyword">eliminateAgencyBloat</span>() {
+  <span class="keyword">return</span> <span class="string">"Direct developer execution"</span>;
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      PROOF BAR
+      ========================================================================= -->
+    <!-- PLACEHOLDER: Replace with real Lighthouse score, load time, and metrics -->
+    <section class="proof-section">
+      <div class="container proof-grid">
+        <div class="proof-card">
+          <span class="proof-value">99+</span>
+          <span class="proof-label">Lighthouse Performance</span>
+        </div>
+        <div class="proof-card">
+          <span class="proof-value">&lt; 0.6s</span>
+          <span class="proof-label">Avg. Load Time</span>
+        </div>
+        <div class="proof-card">
+          <span class="proof-value">40+</span>
+          <span class="proof-label">WordPress Sites Shipped</span>
+        </div>
+        <div class="proof-card">
+          <span class="proof-value">8+</span>
+          <span class="proof-label">Years Core Dev Experience</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      THE GAP YOU FILL
+      ========================================================================= -->
+    <section class="gap-section">
+      <div class="container">
+        <h2 class="section-title">THE GAP I FILL</h2>
+        <div class="gap-grid">
+          <div class="gap-card">
+            <h3 class="gap-card-title">The Agency Model</h3>
+            <ul class="gap-list agency">
+              <li>Developers blame designers for poor conversion structures.</li>
+              <li>Marketers blame developers for slow page load speeds.</li>
+              <li>3 to 4 middle layers pass messages slowly down the line.</li>
+              <li>High retainers spent on overhead rather than execution.</li>
+            </ul>
+          </div>
+          <div class="gap-card">
+            <h3 class="gap-card-title">The Solo Specialist</h3>
+            <ul class="gap-list solo">
+              <li>Single owner for technical SEO, code efficiency, and CRO.</li>
+              <li>Zero communication decay — direct dev implementation.</li>
+              <li>Fast turnaround on critical user-experience fixes.</li>
+              <li>Focused on one key output: revenue per visitor.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      WHAT YOU DO — 3 PILLARS
+      ========================================================================= -->
+    <section class="pillars-section" id="services">
+      <div class="container">
+        <h2 class="section-title">WHAT I DO</h2>
+        <div class="pillars-grid">
+          <article class="pillar-card">
+            <div class="pillar-num">[01]</div>
+            <h3 class="pillar-title">Build</h3>
+            <p class="pillar-desc">
+              Custom, lean WordPress builds without bloated visual page builders. Engineered from scratch with custom themes, clean CSS, and semantic markup for maximum speed and longevity.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-num">[02]</div>
+            <h3 class="pillar-title">Optimize</h3>
+            <p class="pillar-desc">
+              Database cleanup, script deferral, asset minification, and server configuration. Turning slow, sluggish WordPress installs into sub-second Core Web Vitals leaders.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-num">[03]</div>
+            <h3 class="pillar-title">Convert</h3>
+            <p class="pillar-desc">
+              Data-backed CRO audits, checkout friction reduction, and layout restructuring designed to increase form submissions, sign-ups, and sales without spending more on ads.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      CASE STUDIES
+      ========================================================================= -->
+    <section class="cases-section" id="work">
+      <div class="container">
+        <h2 class="section-title">SELECTED WORK</h2>
+        <div class="cases-grid">
+          
+          <!-- Case 1 -->
+          <article class="case-card">
+            <div class="case-image-wrapper">
+              <!-- PLACEHOLDER IMAGE: Case Study 1 — 16:9 ratio. Replace svg data uri with 1200x675px WebP image -->
+              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><rect width='100%' height='100%' fill='%23201d1d'/><text x='50%' y='50%' fill='%239a9898' dominant-baseline='middle' text-anchor='middle' font-family='monospace'>CASE STUDY SCREENSHOT</text></svg>" 
+                   alt="B2B SaaS WordPress Redesign Case Study Preview" 
+                   loading="lazy" 
+                   width="800" 
+                   height="450">
+            </div>
+            <div class="case-body">
+              <span class="case-client">B2B SaaS Platform</span>
+              <h3 class="case-title">Core Web Vitals Remediation &amp; Funnel Overhaul</h3>
+              <p class="pillar-desc" style="margin-bottom: 16px;">
+                <!-- PLACEHOLDER COPY: Problem -> Action -->
+                Problem: Site took 4.2s to load, losing 40% of ad traffic. Action: Stripped out 14 heavy plugins, rebuilt frontend with vanilla JS and custom block architecture.
+              </p>
+              <div class="case-metrics">
+                <div>
+                  <div class="metric-value">0.4s</div>
+                  <div class="metric-label">LCP Load Time</div>
+                </div>
+                <div>
+                  <div class="metric-value">+42.8%</div>
+                  <div class="metric-label">Demo Signups</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Case 2 -->
+          <article class="case-card">
+            <div class="case-image-wrapper">
+              <!-- PLACEHOLDER IMAGE: Case Study 2 — 16:9 ratio. Replace svg data uri with 1200x675px WebP image -->
+              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><rect width='100%' height='100%' fill='%23201d1d'/><text x='50%' y='50%' fill='%239a9898' dominant-baseline='middle' text-anchor='middle' font-family='monospace'>CASE STUDY SCREENSHOT</text></svg>" 
+                   alt="WooCommerce Store CRO Case Study Preview" 
+                   loading="lazy" 
+                   width="800" 
+                   height="450">
+            </div>
+            <div class="case-body">
+              <span class="case-client">E-Commerce Brand</span>
+              <h3 class="case-title">WooCommerce Speed Optimization &amp; Mobile Checkout CRO</h3>
+              <p class="pillar-desc" style="margin-bottom: 16px;">
+                <!-- PLACEHOLDER COPY: Problem -> Action -->
+                Problem: Mobile abandoned cart rate exceeded 78%. Action: Optimized database queries, streamlined checkout workflow to a single-page frictionless UI.
+              </p>
+              <div class="case-metrics">
+                <div>
+                  <div class="metric-value">100/100</div>
+                  <div class="metric-label">Mobile Score</div>
+                </div>
+                <div>
+                  <div class="metric-value">+28.5%</div>
+                  <div class="metric-label">Checkout Conversion</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      PROCESS
+      ========================================================================= -->
+    <section class="process-section" id="process">
+      <div class="container">
+        <h2 class="section-title">THE PROCESS</h2>
+        <div class="process-grid">
+          <div class="process-step">
+            <div class="step-header">STEP 01</div>
+            <h3 class="step-title">Audit &amp; Diagnose</h3>
+            <p class="step-desc">
+              I run a full technical audit on your site's codebase, database, asset tree, and conversion bottlenecks. You get a prioritized action plan.
+            </p>
+          </div>
+          <div class="process-step">
+            <div class="step-header">STEP 02</div>
+            <h3 class="step-title">Build &amp; Refine</h3>
+            <p class="step-desc">
+              I implement all fixes directly in code—eliminating bloat, refactoring slow scripts, and rebuilding key conversion pathways.
+            </p>
+          </div>
+          <div class="process-step">
+            <div class="step-header">STEP 03</div>
+            <h3 class="step-title">Launch &amp; Monitor</h3>
+            <p class="step-desc">
+              We deploy the optimized build with zero downtime, verify real-world Core Web Vitals, and track conversion improvements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      FOUNDER BAR
+      ========================================================================= -->
+    <section class="founder-section" id="about">
+      <div class="container">
+        <div class="founder-card">
+          <!-- PLACEHOLDER IMAGE: Headshot avatar — 120x120px square crop -->
+          <img class="founder-avatar" 
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='100%' height='100%' fill='%23302c2c'/><text x='50%' y='50%' fill='%239a9898' dominant-baseline='middle' text-anchor='middle' font-family='monospace'>NAHIAN</text></svg>" 
+               alt="Nahian Headshot" 
+               loading="lazy" 
+               width="120" 
+               height="120">
+          <div class="founder-bio">
+            <!-- PLACEHOLDER COPY: Founder Bio -->
+            I'm Nahian, an independent WordPress developer and Conversion Rate Optimization specialist. I've spent over 8 years building fast web platforms and fixing low-converting sites. Because I work solo, you work directly with the engineer writing your code—ensuring faster execution, complete accountability, and zero agency bloat.
+            <span class="founder-name">— Nahian, Solo Specialist</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+      CLOSING CTA
+      ========================================================================= -->
+    <section class="cta-section" id="contact">
+      <div class="container">
+        <div class="cta-inner">
+          <h2 class="cta-title">Ready for a WordPress site that loads fast and converts?</h2>
+          <p class="cta-desc">
+            No long sales calls or account managers. Get a direct technical audit and plan from the person who will actually write the code.
+          </p>
+          <div class="cta-actions">
+            <!-- PLACEHOLDER LINKS: Replace with actual contact details -->
+            <a href="mailto:nahian@example.com" class="btn btn-primary">[@] Email Me</a>
+            <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">[#] WhatsApp / Phone</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+    FOOTER
+    ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span>NAHIAN — WordPress Dev &amp; CRO Specialist</span>
+      </div>
+      <div>
+        <!-- PLACEHOLDER EMAIL: Replace email address -->
+        <span>Direct: <a href="mailto:nahian@example.com">nahian@example.com</a></span>
+      </div>
+      <div>
+        <span>&copy; <span id="year">2026</span> Nahian. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+    LIGHTWEIGHT VANILLA JS (INP OPTIMIZED)
+    ========================================================================= -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set dynamic year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Mobile Menu Flyout Setup
+      const openMenuBtn = document.getElementById('openMenuBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const flyoutMenu = document.getElementById('flyoutMenu');
+      const menuBackdrop = document.getElementById('menuBackdrop');
+      const flyoutLinks = document.querySelectorAll('.flyout-link');
+
+      // Focus trap items
+      const focusableElements = flyoutMenu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+
+      function openMenu() {
+        flyoutMenu.classList.add('is-active');
+        menuBackdrop.classList.add('is-active');
+        document.body.classList.add('menu-open');
+        openMenuBtn.setAttribute('aria-expanded', 'true');
+        closeMenuBtn.focus();
+        document.addEventListener('keydown', handleKeyPress);
+      }
+
+      function closeMenu() {
+        flyoutMenu.classList.remove('is-active');
+        menuBackdrop.classList.remove('is-active');
+        document.body.classList.remove('menu-open');
+        openMenuBtn.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('keydown', handleKeyPress);
+        openMenuBtn.focus();
+      }
+
+      function handleKeyPress(e) {
+        if (e.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+
+        // Focus trap
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+              lastFocusable.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === lastFocusable) {
+              firstFocusable.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      }
+
+      openMenuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+      menuBackdrop.addEventListener('click', closeMenu);
+
+      flyoutLinks.forEach(function(link) {
+        link.addEventListener('click', closeMenu);
+      });
+    });
+  </script>
+
+  <!-- =========================================================================
+    OPTIONAL DEFERRED ANALYTICS (COMMENTED OUT BY DEFAULT)
+    ========================================================================= -->
+  <!--
+  <script defer src="https://plausible.io/js/script.js" data-domain="yourdomain.com"></script>
+  -->
+</body>
+</html>
