@@ -1,1243 +1,813 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NAHIAN — High-Speed WordPress Development & CRO</title>
-  <meta name="description" content="WordPress sites that load fast and convert — built and optimized by solo specialist Nahian, not an agency. Core Web Vitals remediation & CRO.">
-  <meta name="theme-color" content="#000000">
-  <!-- Preload hero image candidate for LCP optimization -->
-  <link rel="preload" as="image" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1500' viewBox='0 0 1200 1500'><rect width='100%' height='100%' fill='%23050508'/><path d='M0 0L1200 1500M1200 0L0 1500' stroke='%231a1a24' stroke-width='1'/><circle cx='600' cy='750' r='400' fill='none' stroke='%23262633' stroke-width='2'/><text x='600' y='730' font-family='Arial' font-size='32' fill='%235a5a5f' text-anchor='middle' font-weight='bold'>HERO IMAGE PLACEHOLDER</text><text x='600' y='780' font-family='Arial' font-size='20' fill='%233a3a3f' text-anchor='middle'>1200 x 1500 • ROCKET / MONITOR TECH</text></svg>" fetchpriority="high">
-  <style>
-    /* 
-      ==========================================================================
-      DELIBERATE READABILITY DEVIATION (WCAG AA CONTRAST REQUIREMENT):
-      The SpaceX source design system places white text directly on photo surfaces.
-      To ensure 100% WCAG AA contrast compliance across un-graded or variable 
-      user image placeholders, a subtle bottom-to-top gradient scrim 
-      (linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%)) 
-      is layered over all full-bleed photographic elements behind text.
-      ==========================================================================
-    */
-    /* DESIGN SYSTEM TOKENS */
-    :root {
-      /* Colors */
-      --canvas-night: #000000;
-      --canvas-night-soft: #0a0a0a;
-      --canvas-light: #ffffff;
-      --canvas-cool: #f0f0fa;
-      --on-primary: #ffffff;
-      --on-primary-mute: #f0f0fa;
-      --ink: #000000;
-      --ink-mute: #5a5a5f;
-      --hairline-on-dark: #3a3a3f;
-      --hairline-on-light: #e0e0e8;
-      --link-on-dark: #ffffff;
-      /* Typography Families */
-      --font-display: "D-DIN-Bold", "Arial Narrow", Arial, Verdana, sans-serif;
-      --font-body: "D-DIN", Arial, Verdana, sans-serif;
-      /* Spacing Scale */
-      --space-xxs: 4px;
-      --space-xs: 8px;
-      --space-sm: 12px;
-      --space-md: 16px;
-      --space-lg: 18px;
-      --space-xl: 24px;
-      --space-xxl: 32px;
-      --space-huge: 48px;
-      --space-giant: 80px;
-      /* Radius Scale */
-      --radius-xs: 4px;
-      --radius-sm: 8px;
-      --radius-md: 16px;
-      --radius-pill: 32px;
-      --radius-full: 9999px;
-      /* Transition */
-      --transition-standard: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    /* GLOBAL RESET & BASE STYLES */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html {
-      scroll-behavior: smooth;
-      background-color: var(--canvas-night);
-      color: var(--on-primary);
-      font-family: var(--font-body);
-      font-size: 16px;
-      -webkit-text-size-adjust: 100%;
-    }
-    body {
-      background-color: var(--canvas-night);
-      color: var(--on-primary);
-      line-height: 1.7;
-      letter-spacing: 0.32px;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-    body.scroll-locked {
-      overflow: hidden;
-    }
-    img, svg, picture {
-      max-width: 100%;
-      display: block;
-    }
-    a {
-      color: var(--link-on-dark);
-      text-decoration: none;
-      transition: opacity var(--transition-standard);
-    }
-    a:hover {
-      opacity: 0.85;
-    }
-    /* TYPOGRAPHY UTILITIES */
-    .micro-eyebrow {
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 2.0;
-      letter-spacing: 0.96px;
-      text-transform: uppercase;
-      color: var(--on-primary-mute);
-      display: block;
-      margin-bottom: var(--space-xs);
-    }
-    .display-xxl {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 6vw, 80px);
-      font-weight: 700;
-      line-height: 0.95;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: var(--on-primary);
-    }
-    .display-xl {
-      font-family: var(--font-display);
-      font-size: clamp(30px, 4.5vw, 60px);
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--on-primary);
-    }
-    .display-lg {
-      font-family: var(--font-display);
-      font-size: clamp(24px, 3.5vw, 48px);
-      font-weight: 700;
-      line-height: 1.25;
-      letter-spacing: 0.96px;
-      text-transform: uppercase;
-      color: var(--on-primary);
-    }
-    .body-lg {
-      font-size: 18px;
-      line-height: 1.6;
-      color: var(--on-primary-mute);
-      max-width: 60ch;
-    }
-    .body-md {
-      font-size: 16px;
-      line-height: 1.7;
-      color: var(--on-primary-mute);
-    }
-    /* BUTTONS (SPACEX GHOST PILL SYSTEM) */
-    .button-ghost-on-dark {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: transparent;
-      color: var(--on-primary);
-      font-family: var(--font-body);
-      font-size: 13.008px;
-      font-weight: 700;
-      line-height: 0.94;
-      letter-spacing: 1.17px;
-      text-transform: uppercase;
-      border: 1px solid var(--on-primary);
-      border-radius: var(--radius-pill);
-      padding: 18px 28px;
-      min-height: 50px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background-color var(--transition-standard), color var(--transition-standard), transform 0.15s ease;
-      text-decoration: none;
-    }
-    .button-ghost-on-dark:hover {
-      background-color: var(--on-primary);
-      color: var(--ink);
-      opacity: 1;
-    }
-    .button-ghost-on-dark:active {
-      transform: scale(0.98);
-    }
-    .button-ghost-on-light {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--canvas-light);
-      color: var(--ink);
-      font-family: var(--font-body);
-      font-size: 13.008px;
-      font-weight: 700;
-      line-height: 0.94;
-      letter-spacing: 1.17px;
-      text-transform: uppercase;
-      border: 1px solid var(--ink);
-      border-radius: var(--radius-pill);
-      padding: 18px 28px;
-      min-height: 50px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background-color var(--transition-standard), color var(--transition-standard), transform 0.15s ease;
-      text-decoration: none;
-    }
-    .button-ghost-on-light:hover {
-      background-color: var(--ink);
-      color: var(--canvas-light);
-    }
-    .button-ghost-on-light:active {
-      transform: scale(0.98);
-    }
-    /* FOCUS RINGS FOR ACCESSIBILITY */
-    :focus-visible {
-      outline: 2px solid var(--on-primary);
-      outline-offset: 4px;
-    }
-    /* CONTAINER & LAYOUT */
-    .container {
-      width: 100%;
-      max-width: 1280px;
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: var(--space-xl);
-      padding-right: var(--space-xl);
-    }
-    /* FIXED OVERLAY HEADER */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      padding: var(--space-xl) var(--space-xxl);
-      transition: background-color var(--transition-standard);
-    }
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .site-logo {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--on-primary);
-      text-decoration: none;
-    }
-    .desktop-nav {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xxl);
-    }
-    .nav-link {
-      font-family: var(--font-body);
-      font-size: 13.008px;
-      font-weight: 700;
-      line-height: 0.94;
-      letter-spacing: 1.17px;
-      text-transform: uppercase;
-      color: var(--on-primary);
-      position: relative;
-      padding-bottom: 4px;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0%;
-      height: 1px;
-      background-color: var(--on-primary);
-      transition: width var(--transition-standard);
-    }
-    .nav-link:hover::after {
-      width: 100%;
-    }
-    /* HAMBURGER TRIGGER (MOBILE ONLY) */
-    .mobile-menu-trigger {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--on-primary);
-      cursor: pointer;
-      padding: var(--space-xs);
-      z-index: 101;
-    }
-    .mobile-menu-trigger svg {
-      width: 28px;
-      height: 28px;
-      stroke: var(--on-primary);
-    }
-    /* MOBILE FLYOUT MENU */
-    .mobile-flyout {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 100%;
-      max-width: 400px;
-      height: 100vh;
-      height: 100dvh;
-      background-color: var(--canvas-night);
-      border-left: 1px solid var(--hairline-on-dark);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: var(--space-xxl) var(--space-xl) calc(var(--space-xxl) + env(safe-area-inset-bottom, 0px));
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      visibility: hidden;
-    }
-    .mobile-flyout.is-open {
-      transform: translateX(0);
-      visibility: visible;
-    }
-    .flyout-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start; /* Close X at TOP-LEFT per instructions */
-      margin-bottom: var(--space-huge);
-    }
-    .flyout-close {
-      background: none;
-      border: 1px solid var(--hairline-on-dark);
-      border-radius: var(--radius-full);
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--on-primary);
-      cursor: pointer;
-      transition: border-color var(--transition-standard);
-    }
-    .flyout-close:hover {
-      border-color: var(--on-primary);
-    }
-    .flyout-close svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--on-primary);
-    }
-    .flyout-nav {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xl);
-    }
-    .flyout-nav .nav-link {
-      font-family: var(--font-display);
-      font-size: 28px;
-      line-height: 1.1;
-      letter-spacing: 1.2px;
-    }
-    .flyout-footer {
-      margin-top: auto;
-      padding-top: var(--space-xxl);
-      border-top: 1px solid var(--hairline-on-dark);
-    }
-    .flyout-footer .button-ghost-on-dark {
-      width: 100%;
-    }
-    .backdrop-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(2px);
-      z-index: 199;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .backdrop-overlay.is-active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    /* SECTION 1: HERO BAND */
-    .hero-section {
-      position: relative;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      padding-top: 120px;
-      padding-bottom: var(--space-huge);
-      background-color: var(--canvas-night);
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nahian — WordPress Development & CRO</title>
+<meta name="description" content="WordPress sites that load fast and convert — built and optimized by one person, not an agency.">
+
+<!--
+  DESIGN NOTE / DEVIATION FROM SOURCE REFERENCE:
+  The source aesthetic (SpaceX-style) places type directly on ungraded photography with no scrim,
+  relying on pre-graded hero images. Since this build uses placeholder imagery of unknown contrast,
+  a bottom-to-top gradient scrim (rgba(0,0,0,0) -> rgba(0,0,0,0.55)) has been added behind all
+  hero/photo-band text to guarantee WCAG AA contrast regardless of the final photo swapped in.
+
+  FONT NOTE: D-DIN-Bold / D-DIN are licensed commercial fonts not available to self-host here.
+  Shipping the documented fallback chain only: Arial Narrow / Arial / Verdana for display,
+  Arial / Verdana for body. Swap in @font-face blocks (commented below) once licensed files exist.
+-->
+
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    --canvas-night: #000000;
+    --canvas-night-soft: #0a0a0a;
+    --canvas-light: #ffffff;
+    --canvas-cool: #f0f0fa;
+    --on-primary: #ffffff;
+    --on-primary-mute: #f0f0fa;
+    --ink: #000000;
+    --ink-mute: #5a5a5f;
+    --hairline-on-dark: #3a3a3f;
+    --hairline-on-light: #e0e0e8;
+    --link-on-dark: #ffffff;
+
+    --font-display: "D-DIN-Bold", "Arial Narrow", Arial, Verdana, sans-serif;
+    --font-body: "D-DIN", Arial, Verdana, sans-serif;
+  }
+
+  /*
+  Self-hosted font example (uncomment and point to real files when licensed):
+  @font-face {
+    font-family: "D-DIN-Bold";
+    src: url("/fonts/D-DIN-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "D-DIN";
+    src: url("/fonts/D-DIN.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+  }
+  */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--canvas-night);
+    color: var(--on-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.32px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { display: block; max-width: 100%; }
+
+  a { color: var(--link-on-dark); }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 2.0;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+    color: var(--on-primary-mute);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .eyebrow.on-light { color: var(--ink-mute); }
+
+  :focus-visible {
+    outline: 2px solid var(--on-primary);
+    outline-offset: 3px;
+  }
+
+  .container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: 1.17px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 32px;
+    padding: 18px 24px;
+    border: 1px solid var(--on-primary);
+    background: transparent;
+    color: var(--on-primary);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn:hover { background: var(--on-primary); color: var(--ink); }
+
+  .btn.on-light {
+    border: 1px solid var(--ink);
+    background: var(--canvas-light);
+    color: var(--ink);
+  }
+
+  .btn.on-light:hover { background: var(--ink); color: var(--on-primary); }
+
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  /* ============ NAV ============ */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 20px;
+    background: transparent;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--on-primary);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: none;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.17px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--on-primary);
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+
+  .nav-toggle {
+    background: none;
+    border: none;
+    color: var(--on-primary);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 210;
+  }
+
+  .nav-toggle span {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--on-primary);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  @media (min-width: 1024px) {
+    .nav-links { display: flex; }
+    .nav-toggle { display: none; }
+  }
+
+  /* ============ FLYOUT MENU ============ */
+  .flyout {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100dvh;
+    width: min(86vw, 380px);
+    background: var(--canvas-night);
+    border-left: 1px solid var(--hairline-on-dark);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 28px calc(28px + env(safe-area-inset-bottom));
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .flyout.open { transform: translateX(0); }
+
+  .flyout-close {
+    background: none;
+    border: none;
+    color: var(--on-primary);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    align-self: flex-start;
+    padding: 8px;
+    margin-left: -8px;
+  }
+
+  .flyout-links {
+    list-style: none;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .flyout-links a {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-decoration: none;
+    color: var(--on-primary);
+  }
+
+  .flyout-spacer { flex: 1; }
+
+  .flyout .btn { width: 100%; margin-top: 24px; }
+
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 190;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .backdrop.open { opacity: 1; pointer-events: auto; }
+
+  body.no-scroll { overflow: hidden; }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 120px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%);
+    z-index: 1;
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .hero-copy { max-width: 640px; }
+
+  .hero h1 {
+    font-size: clamp(34px, 9vw, 80px);
+    line-height: 0.98;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--on-primary-mute);
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+
+  @media (min-width: 1024px) {
+    .hero { align-items: center; padding-top: 0; }
     .hero-grid {
-      display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-huge);
       align-items: center;
+      min-height: 100vh;
     }
-    .hero-content {
+    .hero-bg { position: absolute; inset: 0; left: 50%; }
+    .hero-bg-mobile-only { display: none; }
+    .hero-visual {
       position: relative;
-      z-index: 2;
+      height: 80vh;
+      align-self: center;
     }
-    .hero-headline {
-      margin-top: var(--space-xs);
-      margin-bottom: var(--space-xl);
-    }
-    .hero-subhead {
-      margin-bottom: var(--space-xxl);
-    }
-    .hero-media {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: 520px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--hairline-on-dark);
-    }
-    .hero-media img, .hero-media svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    /* SECTION 2: PROOF BAR */
-    .proof-section {
-      background-color: var(--canvas-night-soft);
-      border-top: 1px solid var(--hairline-on-dark);
-      border-bottom: 1px solid var(--hairline-on-dark);
-      padding: var(--space-huge) 0;
-    }
-    .proof-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-xl);
-      text-align: center;
-    }
-    .proof-card {
-      padding: var(--space-md);
-    }
-    .proof-number {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 4vw, 56px);
-      font-weight: 700;
-      line-height: 1.0;
-      letter-spacing: 1.2px;
-      color: var(--on-primary);
-      margin-bottom: var(--space-xs);
-    }
-    .proof-label {
-      font-family: var(--font-body);
-      font-size: 12px;
-      letter-spacing: 0.96px;
-      text-transform: uppercase;
-      color: var(--ink-mute);
-    }
-    /* SECTION 3: THE GAP YOU FILL (PROBLEM FRAMING) */
-    .problem-section {
-      padding: var(--space-giant) 0;
-      background-color: var(--canvas-night);
-    }
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-huge);
-    }
-    .problem-box {
-      border: 1px solid var(--hairline-on-dark);
-      border-radius: var(--radius-sm);
-      padding: var(--space-xxl);
-      background-color: var(--canvas-night-soft);
-    }
-    .problem-box.solution-box {
-      border-color: var(--on-primary);
-      background-color: var(--canvas-night);
-    }
-    .box-title {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      margin-bottom: var(--space-lg);
-      text-transform: uppercase;
-    }
-    .problem-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-md);
-    }
-    .problem-item {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--space-sm);
-      color: var(--on-primary-mute);
-    }
-    .problem-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
-    .bad-icon {
-      stroke: #883333;
-    }
-    .good-icon {
-      stroke: var(--on-primary);
-    }
-    /* SECTION 4: WHAT YOU DO (3 PILLARS) */
-    .services-section {
-      padding: var(--space-giant) 0;
-      background-color: var(--canvas-night);
-      border-top: 1px solid var(--hairline-on-dark);
-    }
-    .section-header-center {
-      text-align: center;
-      max-width: 800px;
-      margin: 0 auto var(--space-giant);
-    }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-xl);
-    }
-    .service-card {
-      border: 1px solid var(--hairline-on-dark);
-      border-radius: var(--radius-sm);
-      padding: var(--space-xxl);
-      background-color: var(--canvas-night-soft);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: border-color var(--transition-standard);
-    }
-    .service-card:hover {
-      border-color: var(--on-primary);
-    }
-    .service-number {
-      font-family: var(--font-display);
-      font-size: 14px;
-      letter-spacing: 1.6px;
-      color: var(--ink-mute);
-      margin-bottom: var(--space-xl);
-    }
-    .service-title {
-      font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      margin-bottom: var(--space-md);
-    }
-    /* SECTION 5: CASE STUDIES (FULL-BLEED PHOTO BANDS) */
-    .case-studies-section {
-      padding: 0;
-    }
-    .case-band {
-      position: relative;
-      min-height: 80vh;
-      display: flex;
-      align-items: flex-end;
-      padding: var(--space-giant) 0;
-      background-color: var(--canvas-night);
-      overflow: hidden;
-      border-bottom: 1px solid var(--hairline-on-dark);
-    }
-    .case-bg-media {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    .case-bg-media img, .case-bg-media svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    /* GRADIENT SCRIM FOR WCAG AA CONTRAST */
-    .scrim-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.85) 100%);
-      z-index: 2;
-    }
-    .case-content {
-      position: relative;
-      z-index: 3;
-      max-width: 800px;
-    }
-    .case-stat {
-      font-family: var(--font-display);
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      color: var(--on-primary);
-      margin-top: var(--space-sm);
-      margin-bottom: var(--space-xl);
-    }
-    /* SECTION 6: PROCESS (3 STEPS) */
-    .process-section {
-      padding: var(--space-giant) 0;
-      background-color: var(--canvas-night);
-    }
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-xl);
-      margin-top: var(--space-huge);
-    }
-    .process-step {
-      border: 1px solid var(--hairline-on-dark);
-      border-radius: var(--radius-sm);
-      padding: var(--space-xxl);
-      background-color: var(--canvas-night-soft);
-      position: relative;
-    }
-    .step-index {
-      font-family: var(--font-display);
-      font-size: 54px;
-      font-weight: 700;
-      color: var(--hairline-on-dark);
-      line-height: 0.9;
-      margin-bottom: var(--space-lg);
-    }
-    .step-title {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      margin-bottom: var(--space-sm);
-    }
-    /* SECTION 7: FOUNDER BAR */
-    .founder-section {
-      background-color: var(--canvas-night-soft);
-      border-top: 1px solid var(--hairline-on-dark);
-      border-bottom: 1px solid var(--hairline-on-dark);
-      padding: var(--space-giant) 0;
-    }
-    .founder-grid {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: var(--space-huge);
-      align-items: center;
-    }
-    .founder-avatar {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--hairline-on-dark);
-      overflow: hidden;
-    }
-    .founder-avatar img, .founder-avatar svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .founder-bio {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-md);
-    }
-    .founder-name {
-      font-family: var(--font-display);
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-    }
-    /* SECTION 8: CLOSING CTA */
-    .closing-cta-section {
-      padding: clamp(80px, 10vw, 140px) 0;
-      background-color: var(--canvas-night);
-      text-align: center;
-    }
-    .cta-container {
-      max-width: 850px;
-      margin: 0 auto;
-    }
-    .cta-actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-xl);
-      margin-top: var(--space-huge);
-      flex-wrap: wrap;
-    }
-    /* SECTION 9: FOOTER */
-    .site-footer {
-      background-color: var(--canvas-night);
-      border-top: 1px solid var(--hairline-on-dark);
-      padding: var(--space-huge) 0 var(--space-xxl);
-    }
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--space-xl);
-    }
-    .footer-copy {
-      font-size: 13.008px;
-      color: var(--ink-mute);
-    }
-    /* RESPONSIVE BREAKPOINTS (MOBILE-FIRST LAYERED) */
-    @media (max-width: 1023px) {
-      .desktop-nav {
-        display: none;
-      }
-      .mobile-menu-trigger {
-        display: block;
-      }
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-      .hero-section {
-        padding-top: 100px;
-        min-height: auto;
-      }
-      /* On Mobile: Hero image acts as full bleed background */
-      .hero-section-mobile-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-      }
-      .hero-section-mobile-bg img, .hero-section-mobile-bg svg {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .hero-media-desktop {
-        display: none;
-      }
-      .proof-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .problem-grid, .services-grid, .process-grid {
-        grid-template-columns: 1fr;
-      }
-      .founder-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-      .founder-avatar {
-        max-width: 240px;
-        margin: 0 auto;
-      }
-    }
-    @media (max-width: 600px) {
-      .proof-grid {
-        grid-template-columns: 1fr;
-      }
-      .cta-actions {
-        flex-direction: column;
-        width: 100%;
-      }
-      .cta-actions .button-ghost-on-dark {
-        width: 100%;
-      }
-      .site-header {
-        padding: var(--space-md) var(--space-lg);
-      }
-    }
-    /* REDUCED MOTION PREFERENCE */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+    .hero-visual img { height: 100%; width: 100%; object-fit: cover; }
+    .hero-scrim { display: none; }
+  }
+
+  /* Mobile: full-bleed bg image behind copy, no separate right panel */
+  @media (max-width: 1023px) {
+    .hero-visual { display: none; }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { position: relative; }
+
+  .band-dark { background: var(--canvas-night); padding: 100px 0; }
+  .band-soft { background: var(--canvas-night-soft); padding: 80px 0; border-top: 1px solid var(--hairline-on-dark); border-bottom: 1px solid var(--hairline-on-dark); }
+
+  h2 { font-size: clamp(30px, 6vw, 60px); letter-spacing: 1.2px; margin-bottom: 24px; }
+  h3 { font-size: clamp(22px, 4vw, 32px); letter-spacing: 0.6px; margin-bottom: 16px; }
+
+  .section-lead {
+    max-width: 620px;
+    color: var(--on-primary-mute);
+    font-size: 18px;
+    margin-bottom: 48px;
+  }
+
+  /* Proof bar */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 20px;
+  }
+
+  @media (min-width: 768px) {
+    .proof-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .proof-item { border-left: 1px solid var(--hairline-on-dark); padding-left: 20px; }
+
+  .proof-number {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 48px);
+    letter-spacing: 0.6px;
+    display: block;
+  }
+
+  .proof-label {
+    font-size: 12px;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+    color: var(--on-primary-mute);
+    margin-top: 8px;
+    display: block;
+  }
+
+  /* Pillars */
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  @media (min-width: 768px) {
+    .pillar-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .pillar { border-top: 1px solid var(--hairline-on-dark); padding-top: 24px; }
+
+  .pillar p { color: var(--on-primary-mute); }
+
+  /* Case study bands */
+  .case-band {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .case-band img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .case-band .hero-scrim { z-index: 1; }
+
+  .case-content {
+    position: relative;
+    z-index: 2;
+    padding: 60px 20px;
+    width: 100%;
+  }
+
+  .case-stat {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 3vw, 28px);
+    text-transform: none;
+    letter-spacing: 0.3px;
+    margin-bottom: 24px;
+    max-width: 560px;
+  }
+
+  /* Process */
+  .process-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .process-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .process-step { border-top: 1px solid var(--hairline-on-dark); padding-top: 24px; }
+
+  .process-index {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--on-primary-mute);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .process-step p { color: var(--on-primary-mute); }
+
+  /* Founder bar */
+  .founder-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .founder-grid { grid-template-columns: 1fr 2fr; }
+  }
+
+  .founder-photo {
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 220px;
+  }
+
+  .founder-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .founder-bio p { color: var(--on-primary-mute); max-width: 640px; }
+
+  /* Closing CTA */
+  .closing {
+    padding: 120px 0;
+    text-align: left;
+  }
+
+  .closing h2 { max-width: 760px; }
+
+  /* Footer */
+  footer {
+    background: var(--canvas-night-soft);
+    border-top: 1px solid var(--hairline-on-dark);
+    padding: 48px 0;
+  }
+
+  .footer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--on-primary-mute);
+  }
+
+  @media (min-width: 768px) {
+    .footer-row { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+
+  .footer-row a { text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .flyout { transition: none; }
+    .backdrop { transition: none; }
+  }
+</style>
 </head>
 <body>
-  <!-- FIXED OVERLAY HEADER -->
-  <header class="site-header" id="site-header">
-    <div class="header-inner">
-      <a href="#" class="site-logo" aria-label="Nahian Home">NAHIAN</a>
-      
-      <!-- Desktop Navigation Links (No Call Button in Header per instructions) -->
-      <nav class="desktop-nav" aria-label="Desktop Navigation">
-        <a href="#work" class="nav-link">WORK</a>
-        <a href="#services" class="nav-link">SERVICES</a>
-        <a href="#process" class="nav-link">PROCESS</a>
-        <a href="#about" class="nav-link">ABOUT</a>
-        <a href="#contact" class="nav-link">CONTACT</a>
-      </nav>
-      <!-- Mobile Hamburger Trigger -->
-      <button class="mobile-menu-trigger" id="hamburger-trigger" aria-label="Open Mobile Menu" aria-expanded="false" aria-controls="mobile-flyout">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      </button>
-    </div>
-  </header>
-  <!-- BACKDROP OVERLAY FOR MOBILE FLYOUT -->
-  <div class="backdrop-overlay" id="backdrop-overlay"></div>
-  <!-- MOBILE FLYOUT MENU (SLIDES IN FROM RIGHT, CLOSE AT TOP-LEFT, PINNED CALL BUTTON AT BOTTOM) -->
-  <aside class="mobile-flyout" id="mobile-flyout" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu">
-    <div class="flyout-header">
-      <!-- Close Button (X) placed at TOP-LEFT per exact prompt instructions -->
-      <button class="flyout-close" id="flyout-close" aria-label="Close Mobile Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <nav class="flyout-nav" aria-label="Mobile Navigation">
-      <a href="#work" class="nav-link flyout-link">WORK</a>
-      <a href="#services" class="nav-link flyout-link">SERVICES</a>
-      <a href="#process" class="nav-link flyout-link">PROCESS</a>
-      <a href="#about" class="nav-link flyout-link">ABOUT</a>
-      <a href="#contact" class="nav-link flyout-link">CONTACT</a>
-    </nav>
-    <!-- Bottom pinned ghost call button (tel: link) per instructions -->
-    <div class="flyout-footer">
-      <a href="tel:+18005550199" class="button-ghost-on-dark">CALL NOW — +1 (800) 555-0199</a>
-    </div>
-  </aside>
-  <main>
-    <!-- SECTION 1: HERO BAND -->
-    <section class="hero-section" id="hero">
-      <!-- 
-        PLACEHOLDER IMAGE: Hero Mobile Background (under 1024px)
-        Target Aspect Ratio: 1080x1350px (4:5 or full height portrait crop).
-        Replace SVG data source below with your actual high-contrast rocket launch or monitor tech shot.
-      -->
-      <div class="hero-section-mobile-bg" style="display: none;">
-        <!-- Scrim applied directly in CSS layout -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" style="width:100%;height:100%;object-fit:cover;">
-          <rect width="100%" height="100%" fill="#050508"/>
-          <circle cx="540" cy="675" r="350" fill="none" stroke="#1c1c28" stroke-width="2"/>
-          <path d="M0 0L1080 1350M1080 0L0 1350" stroke="#12121a" stroke-width="1"/>
-        </svg>
-      </div>
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <span class="micro-eyebrow">WORDPRESS DEVELOPMENT &amp; CRO</span>
-            <h1 class="display-xxl hero-headline">WORDPRESS SITES THAT LOAD FAST AND CONVERT</h1>
-            <p class="body-lg hero-subhead">
-              <!-- PLACEHOLDER COPY: Value prop statement -->
-              Built and optimized by one person, not an agency. Speed-engineered custom architecture and conversion rate optimization that drives real revenue.
-            </p>
-            <div class="hero-cta">
-              <a href="#contact" class="button-ghost-on-dark">GET A FREE AUDIT</a>
-            </div>
-          </div>
-          <!-- Desktop Hero Media Panel -->
-          <!-- 
-            PLACEHOLDER IMAGE: Hero — desktop right panel, 1200x1500px.
-            Replace with a high-contrast photo or mockup representing your best case study (e.g. a dramatically lit laptop/monitor shot).
-          -->
-          <div class="hero-media hero-media-desktop">
-            <picture>
-              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1500' viewBox='0 0 1200 1500'><rect width='100%' height='100%' fill='%2308080c'/><line x1='0' y1='0' x2='1200' y2='1500' stroke='%231a1a26' stroke-width='2'/><line x1='1200' y1='0' x2='0' y2='1500' stroke='%231a1a26' stroke-width='2'/><circle cx='600' cy='750' r='380' fill='none' stroke='%232a2a3a' stroke-width='3'/><circle cx='600' cy='750' r='180' fill='none' stroke='%233a3a50' stroke-width='1' stroke-dasharray='8,8'/><text x='600' y='730' font-family='Arial' font-size='36' fill='%23ffffff' text-anchor='middle' font-weight='bold'>NAHIAN ARCHITECTURE</text><text x='600' y='780' font-family='Arial' font-size='20' fill='%235a5a5f' text-anchor='middle'>1200 x 1500 • HIGH CONTRAST MOCKUP</text></svg>" 
-                   alt="Nahian High-Speed WordPress Architecture Mockup" 
-                   width="1200" 
-                   height="1500" 
-                   fetchpriority="high">
-            </picture>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 2: PROOF BAR -->
-    <!-- PLACEHOLDER: Replace with real Lighthouse score, load time, and count of sites shipped -->
-    <section class="proof-section" id="proof">
-      <div class="container">
-        <div class="proof-grid">
-          <div class="proof-card">
-            <div class="proof-number">99+</div>
-            <div class="proof-label">LIGHTHOUSE SPEED SCORE</div>
-          </div>
-          <div class="proof-card">
-            <div class="proof-number">&lt;0.8s</div>
-            <div class="proof-label">AVG MOBILE LOAD TIME</div>
-          </div>
-          <div class="proof-card">
-            <div class="proof-number">45+</div>
-            <div class="proof-label">WORDPRESS SITES SHIPPED</div>
-          </div>
-          <div class="proof-card">
-            <div class="proof-number">7+</div>
-            <div class="proof-label">YEARS SPECIALIZED EXPERIENCE</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 3: THE GAP YOU FILL (PROBLEM FRAMING) -->
-    <section class="problem-section" id="gap">
-      <div class="container">
-        <div class="section-header-center">
-          <span class="micro-eyebrow">THE AGENCY VS SOLO SPECIALIST GAP</span>
-          <h2 class="display-xl">WHY TRADITIONAL WORDPRESS BUILDS FAIL</h2>
-        </div>
-        <div class="problem-grid">
-          <!-- Traditional Agency Box -->
-          <div class="problem-box">
-            <h3 class="box-title" style="color: #aa5555;">TRADITIONAL AGENCY BUILDS</h3>
-            <ul class="problem-list">
-              <li class="problem-item">
-                <svg class="bad-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>Bloated elementor/divi page builders with 50+ unnecessary plugins</span>
-              </li>
-              <li class="problem-item">
-                <svg class="bad-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>3.5s+ mobile load times causing 40%+ visitor bounce rates</span>
-              </li>
-              <li class="problem-item">
-                <svg class="bad-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>Delegated to junior developers and bloated account management tiers</span>
-              </li>
-              <li class="problem-item">
-                <svg class="bad-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>Fails Google Core Web Vitals (CLS layout shifts and poor INP responsiveness)</span>
-              </li>
-            </ul>
-          </div>
-          <!-- Nahian Solo Specialist Box -->
-          <div class="problem-box solution-box">
-            <h3 class="box-title">THE NAHIAN SYSTEM</h3>
-            <ul class="problem-list">
-              <li class="problem-item">
-                <svg class="good-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
-                <span>Clean, custom Gutenberg &amp; PHP architecture with minimal plugin overhead</span>
-              </li>
-              <li class="problem-item">
-                <svg class="good-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
-                <span>Sub-second mobile loading engineered for maximum conversion velocity</span>
-              </li>
-              <li class="problem-item">
-                <svg class="good-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
-                <span>Direct 1-on-1 collaboration with the senior engineer building your site</span>
-              </li>
-              <li class="problem-item">
-                <svg class="good-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
-                <span>Guaranteed 95+ Core Web Vitals pass across desktop and mobile devices</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 4: WHAT YOU DO (3 PILLARS) -->
-    <section class="services-section" id="services">
-      <div class="container">
-        <div class="section-header-center">
-          <span class="micro-eyebrow">CORE CAPABILITIES</span>
-          <h2 class="display-xl">BUILD. OPTIMIZE. CONVERT.</h2>
-        </div>
-        <div class="services-grid">
-          <!-- Pillar 1 -->
-          <div class="service-card">
-            <div>
-              <div class="service-number">PILLAR 01</div>
-              <h3 class="service-title">BUILD</h3>
-              <p class="body-md">
-                Custom WordPress architecture engineered from scratch. Modern block themes, headless setups, or tailored WooCommerce stores with zero bloated frameworks.
-              </p>
-            </div>
-          </div>
-          <!-- Pillar 2 -->
-          <div class="service-card">
-            <div>
-              <div class="service-number">PILLAR 02</div>
-              <h3 class="service-title">OPTIMIZE</h3>
-              <p class="body-md">
-                Surgical Core Web Vitals remediation. Database cleaning, asset minification, server-side caching, and image compression to hit 99+ Lighthouse scores.
-              </p>
-            </div>
-          </div>
-          <!-- Pillar 3 -->
-          <div class="service-card">
-            <div>
-              <div class="service-number">PILLAR 03</div>
-              <h3 class="service-title">CONVERT</h3>
-              <p class="body-md">
-                Conversion Rate Optimization (CRO). Removing user checkout friction, heatmapping behavioral UX, and crafting high-converting sales landers.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 5: CASE STUDIES (3 FULL-BLEED PHOTO BANDS) -->
-    <section class="case-studies-section" id="work">
-      <!-- Case Study 1 -->
-      <article class="case-band">
-        <!-- 
-          PLACEHOLDER IMAGE: Case Study 1 Background Image (1920x1080px).
-          Replace SVG below with real high-resolution project screenshot or rocket asset.
-        -->
-        <div class="case-bg-media">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <rect width="100%" height="100%" fill="#05080c"/>
-            <circle cx="960" cy="540" r="500" fill="none" stroke="#141c28" stroke-width="2"/>
-            <line x1="0" y1="0" x2="1920" y2="1080" stroke="#101620" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="scrim-overlay"></div>
-        <div class="container">
-          <div class="case-content">
-            <span class="micro-eyebrow">CASE STUDY 01 — E-COMMERCE</span>
-            <h3 class="display-lg">APEX ATHLETICS WOOCOMMERCE RESTRUCTURE</h3>
-            <div class="case-stat">+42% CONVERSION RATE · 0.6S LCP SPEED BOOST</div>
-            <a href="#contact" class="button-ghost-on-dark">VIEW CASE STUDY</a>
-          </div>
-        </div>
-      </article>
-      <!-- Case Study 2 -->
-      <article class="case-band">
-        <!-- 
-          PLACEHOLDER IMAGE: Case Study 2 Background Image (1920x1080px).
-          Replace SVG below with real project screenshot.
-        -->
-        <div class="case-bg-media">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <rect width="100%" height="100%" fill="#080508"/>
-            <line x1="0" y1="540" x2="1920" y2="540" stroke="#1a141a" stroke-width="2"/>
-            <circle cx="1400" cy="400" r="300" fill="none" stroke="#281c28" stroke-width="2"/>
-          </svg>
-        </div>
-        <div class="scrim-overlay"></div>
-        <div class="container">
-          <div class="case-content">
-            <span class="micro-eyebrow">CASE STUDY 02 — B2B SAAS</span>
-            <h3 class="display-lg">ORBIT FLOW ENTERPRISE WORDPRESS PORTAL</h3>
-            <div class="case-stat">99 LIGHTHOUSE SCORE · +65% DEMO LEADS</div>
-            <a href="#contact" class="button-ghost-on-dark">VIEW CASE STUDY</a>
-          </div>
-        </div>
-      </article>
-      <!-- Case Study 3 -->
-      <article class="case-band">
-        <!-- 
-          PLACEHOLDER IMAGE: Case Study 3 Background Image (1920x1080px).
-        -->
-        <div class="case-bg-media">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <rect width="100%" height="100%" fill="#040608"/>
-            <rect x="400" y="200" width="1120" height="680" fill="none" stroke="#121a24" stroke-width="2"/>
-          </svg>
-        </div>
-        <div class="scrim-overlay"></div>
-        <div class="container">
-          <div class="case-content">
-            <span class="micro-eyebrow">CASE STUDY 03 — PUBLISHING</span>
-            <h3 class="display-lg">CHRONICLE MEDIA HIGH-TRAFFIC SPEED OVERHAUL</h3>
-            <div class="case-stat">85% REDUCTION IN TTFB · ZERO CLS LAYOUT SHIFT</div>
-            <a href="#contact" class="button-ghost-on-dark">VIEW CASE STUDY</a>
-          </div>
-        </div>
-      </article>
-    </section>
-    <!-- SECTION 6: PROCESS (3 STEPS) -->
-    <section class="process-section" id="process">
-      <div class="container">
-        <div class="section-header-center">
-          <span class="micro-eyebrow">EXECUTION PROTOCOL</span>
-          <h2 class="display-xl">THE 3-STEP OPTIMIZATION PROCESS</h2>
-        </div>
-        <div class="process-grid">
-          <!-- Step 1 -->
-          <div class="process-step">
-            <div class="step-index">01</div>
-            <h3 class="step-title">DEEP SPEED &amp; CRO AUDIT</h3>
-            <p class="body-md">
-              Complete diagnostic of your existing WordPress setup. I analyze server response times, DOM complexity, script execution bottlenecks, and UX conversion drops.
-            </p>
-          </div>
-          <!-- Step 2 -->
-          <div class="process-step">
-            <div class="step-index">02</div>
-            <h3 class="step-title">CLEAN BUILD &amp; FIX</h3>
-            <p class="body-md">
-              Surgical refactoring of theme files, plugin removal, custom PHP/JS optimization, asset deferral, and responsive mobile checkout flow overhaul.
-            </p>
-          </div>
-          <!-- Step 3 -->
-          <div class="process-step">
-            <div class="step-index">03</div>
-            <h3 class="step-title">LAUNCH &amp; MONITOR</h3>
-            <p class="body-md">
-              Zero-downtime deployment backed by real-user performance monitoring. Post-launch verification to guarantee 95+ Core Web Vitals scores.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 7: FOUNDER BAR -->
-    <section class="founder-section" id="about">
-      <div class="container">
-        <div class="founder-grid">
-          <!-- Founder Portrait Placeholder -->
-          <!-- 
-            PLACEHOLDER IMAGE: Founder Portrait, 600x600px square crop.
-            Replace SVG below with real photo of Nahian.
-          -->
-          <div class="founder-avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
-              <rect width="100%" height="100%" fill="#0a0a10"/>
-              <circle cx="300" cy="240" r="100" fill="none" stroke="#2a2a3c" stroke-width="3"/>
-              <path d="M120 500 C 120 380, 480 380, 480 500" fill="none" stroke="#2a2a3c" stroke-width="3"/>
-              <text x="300" y="550" font-family="Arial" font-size="18" fill="#5a5a5f" text-anchor="middle">NAHIAN • PORTRAIT</text>
-            </svg>
-          </div>
-          <div class="founder-bio">
-            <span class="micro-eyebrow">SOLO SPECIALIST COMMITMENT</span>
-            <h2 class="founder-name">HI, I'M NAHIAN</h2>
-            <p class="body-lg">
-              <!-- PLACEHOLDER COPY: Founder bio -->
-              I don't delegate your project to junior developers or hide behind account managers. I personally audit, code, speed-engineer, and optimize every single line of your WordPress site.
-            </p>
-            <p class="body-md">
-              With 7+ years of dedicated WordPress architecture and CRO experience, my singular focus is building websites that load instantaneously and maximize revenue for growth-driven brands.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- SECTION 8: CLOSING CTA (NO FORM - TWO GHOST PILL BUTTONS) -->
-    <section class="closing-cta-section" id="contact">
-      <div class="container">
-        <div class="cta-container">
-          <span class="micro-eyebrow">START YOUR OPTIMIZATION</span>
-          <h2 class="display-xxl">READY FOR A FASTER, HIGHER-CONVERTING SITE?</h2>
-          <p class="body-lg" style="margin: var(--space-xl) auto 0;">
-            Get a comprehensive 48-hour WordPress speed &amp; conversion audit. No sales pitch, just raw performance metrics and actionable fixes.
-          </p>
-          <div class="cta-actions">
-            <!-- Ghost pill email link -->
-            <a href="mailto:hello@nahian.dev?subject=WordPress%20Audit%20Request" class="button-ghost-on-dark">
-              EMAIL NAHIAN — HELLO@NAHIAN.DEV
-            </a>
-            <!-- Ghost pill phone / WhatsApp link -->
-            <a href="https://wa.me/18005550199" target="_blank" rel="noopener noreferrer" class="button-ghost-on-dark">
-              WHATSAPP / PHONE
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-  <!-- SECTION 9: FOOTER -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-inner">
-        <a href="#" class="site-logo" aria-label="Nahian Home">NAHIAN</a>
-        <div class="footer-copy">
-          &copy; <span id="year">2026</span> NAHIAN. ALL RIGHTS RESERVED. HIGH-PERFORMANCE WORDPRESS &amp; CRO.
-        </div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" aria-label="Primary">
+  <a href="#top" class="nav-logo">Nahian</a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="flyout" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="flyout" id="flyout" role="dialog" aria-modal="true" aria-label="Site menu">
+  <button class="flyout-close" id="flyoutClose" aria-label="Close menu">&times;</button>
+  <ul class="flyout-links">
+    <li><a href="#work" class="flyout-link">Work</a></li>
+    <li><a href="#services" class="flyout-link">Services</a></li>
+    <li><a href="#process" class="flyout-link">Process</a></li>
+    <li><a href="#about" class="flyout-link">About</a></li>
+    <li><a href="#contact" class="flyout-link">Contact</a></li>
+  </ul>
+  <div class="flyout-spacer"></div>
+  <a href="tel:+10000000000" class="btn on-light">Call Nahian</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="hero-bg">
+    <!-- PLACEHOLDER IMAGE: Hero — desktop right panel, ideal 1200x1500px portrait crop, high-contrast.
+         Mobile needs a wider 1080x1350px crop for full-bleed background use since text overlays the top.
+         Replace with a dramatically lit laptop/monitor shot or a best-case-study screenshot. -->
+    <picture>
+      <source media="(min-width: 1024px)" srcset="https://placehold.co/1200x1500/0a0a0a/3a3a3f?text=%20">
+      <img src="https://placehold.co/1080x1350/0a0a0a/3a3a3f?text=%20" alt="" fetchpriority="high" width="1080" height="1350">
+    </picture>
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Wordpress Development &amp; CRO</span>
+      <h1>Sites built to load fast and convert.</h1>
+      <p class="hero-sub"><!-- PLACEHOLDER COPY --> One person handling design, build, and conversion strategy — no agency layer, no handoffs, no markup on your budget.</p>
+      <div class="btn-row">
+        <a href="#work" class="btn on-light">View the work</a>
+        <a href="#contact" class="btn">Start a project</a>
       </div>
     </div>
-  </footer>
-  <!-- DEFERRED ANALYTICS PLACEHOLDER (NO THIRD PARTY SCRIPTS EXECUTED) -->
-  <!-- 
-    <script defer src="https://example.com/analytics.js"></script>
-    <!-- PLACEHOLDER: Insert privacy-friendly analytics script here when deploying to production -->
-  -->
-  <!-- VANILLA JS INTERACTIVITY: HAMBURGER FLYOUT, FOCUS TRAP, SCROLL LOCK -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const hamburgerBtn = document.getElementById('hamburger-trigger');
-      const flyoutCloseBtn = document.getElementById('flyout-close');
-      const flyout = document.getElementById('mobile-flyout');
-      const backdrop = document.getElementById('backdrop-overlay');
-      const flyoutLinks = document.querySelectorAll('.flyout-link');
-      const yearSpan = document.getElementById('year');
-      // Update current year dynamically
-      if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-      }
-      let activeFocusElement = null;
-      // Focusable elements inside flyout menu
-      const getFocusableElements = () => {
-        return flyout.querySelectorAll('a[href], button:not([disabled])');
-      };
-      const openFlyout = () => {
-        activeFocusElement = document.activeElement;
-        flyout.classList.add('is-open');
-        backdrop.classList.add('is-active');
-        flyout.setAttribute('aria-hidden', 'false');
-        hamburgerBtn.setAttribute('aria-expanded', 'true');
-        document.body.classList.add('scroll-locked');
-        // Focus top close button
-        setTimeout(() => {
-          flyoutCloseBtn.focus();
-        }, 100);
-        document.addEventListener('keydown', handleKeyDown);
-      };
-      const closeFlyout = () => {
-        flyout.classList.remove('is-open');
-        backdrop.classList.remove('is-active');
-        flyout.setAttribute('aria-hidden', 'true');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('scroll-locked');
-        document.removeEventListener('keydown', handleKeyDown);
-        if (activeFocusElement) {
-          activeFocusElement.focus();
-        }
-      };
-      // Accessibility: Focus trap & Escape key handler
-      const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-          closeFlyout();
-          return;
-        }
-        if (e.key === 'Tab') {
-          const focusables = Array.from(getFocusableElements());
-          if (focusables.length === 0) return;
-          const firstEl = focusables[0];
-          const lastEl = focusables[focusables.length - 1];
-          if (e.shiftKey) {
-            if (document.activeElement === firstEl) {
-              e.preventDefault();
-              lastEl.focus();
-            }
-          } else {
-            if (document.activeElement === lastEl) {
-              e.preventDefault();
-              firstEl.focus();
-            }
-          }
-        }
-      };
-      // Event listeners
-      hamburgerBtn.addEventListener('click', openFlyout);
-      flyoutCloseBtn.addEventListener('click', closeFlyout);
-      backdrop.addEventListener('click', closeFlyout);
-      // Close flyout when clicking any link
-      flyoutLinks.forEach(link => {
-        link.addEventListener('click', closeFlyout);
+    <div class="hero-visual" aria-hidden="true">
+      <!-- Desktop right panel reuses hero-bg image via CSS background positioning; kept empty for layout -->
+    </div>
+  </div>
+</header>
+
+<!-- ============ PROOF BAR ============ -->
+<section class="band-soft" aria-label="Track record">
+  <div class="container">
+    <!-- PLACEHOLDER: Replace with real Lighthouse score, load time, and count of sites shipped. -->
+    <div class="proof-grid">
+      <div class="proof-item">
+        <span class="proof-number">98</span>
+        <span class="proof-label">Lighthouse score</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-number">0.8s</span>
+        <span class="proof-label">Median load time</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-number">40+</span>
+        <span class="proof-label">Sites shipped</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-number">6+</span>
+        <span class="proof-label">Years in WordPress</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE GAP ============ -->
+<section class="band-dark">
+  <div class="container">
+    <span class="eyebrow">The problem</span>
+    <h2>Most WordPress sites are built once and never fixed.</h2>
+    <p class="section-lead"><!-- PLACEHOLDER COPY --> An agency ships the site, hands it off, and moves to the next client. Nobody owns the load time, the broken form, or the page that stopped ranking. You're left maintaining a site nobody actually understands anymore.</p>
+  </div>
+</section>
+
+<!-- ============ PILLARS ============ -->
+<section class="band-dark" id="services" style="padding-top: 0;">
+  <div class="container">
+    <span class="eyebrow">What you get</span>
+    <h2 style="margin-bottom: 48px;">Three things, one person.</h2>
+    <div class="pillar-grid">
+      <div class="pillar">
+        <h3>Build</h3>
+        <p><!-- PLACEHOLDER COPY --> Custom WordPress builds on a clean, fast foundation — no bloated page builders, no plugin stacking, no unnecessary dependencies.</p>
+      </div>
+      <div class="pillar">
+        <h3>Optimize</h3>
+        <p><!-- PLACEHOLDER COPY --> Core Web Vitals fixed at the source: image pipeline, render-blocking scripts, server response time. Not a plugin — an actual rebuild of what's slow.</p>
+      </div>
+      <div class="pillar">
+        <h3>Convert</h3>
+        <p><!-- PLACEHOLDER COPY --> Every page audited against how real visitors actually behave — friction removed from the path between arrival and the call, form, or booking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASE STUDIES ============ -->
+<section id="work">
+  <div class="case-band">
+    <!-- PLACEHOLDER IMAGE: Case study 1 — full-bleed, 1600x1000px landscape. Replace with a real
+         before/after or hero shot of the client site. High contrast on the bottom third for text legibility. -->
+    <img src="https://placehold.co/1600x1000/0a0a0a/3a3a3f?text=%20" alt="" loading="lazy" width="1600" height="1000">
+    <div class="hero-scrim"></div>
+    <div class="case-content container">
+      <span class="eyebrow">Case study — dental practice</span>
+      <p class="case-stat"><!-- PLACEHOLDER STAT --> Rebuilt the booking page — load time dropped from 5.2s to 0.9s, form completions up 3x.</p>
+      <a href="#contact" class="btn">View case</a>
+    </div>
+  </div>
+
+  <div class="case-band">
+    <!-- PLACEHOLDER IMAGE: Case study 2 — full-bleed, 1600x1000px landscape. Replace with a real
+         before/after or hero shot of the client site. -->
+    <img src="https://placehold.co/1600x1000/0a0a0a/3a3a3f?text=%20" alt="" loading="lazy" width="1600" height="1000">
+    <div class="hero-scrim"></div>
+    <div class="case-content container">
+      <span class="eyebrow">Case study — pressure washing</span>
+      <p class="case-stat"><!-- PLACEHOLDER STAT --> Replaced a dead contact form with a working quote flow — missed leads went from an unknown number to zero.</p>
+      <a href="#contact" class="btn">View case</a>
+    </div>
+  </div>
+
+  <div class="case-band">
+    <!-- PLACEHOLDER IMAGE: Case study 3 — full-bleed, 1600x1000px landscape. -->
+    <img src="https://placehold.co/1600x1000/0a0a0a/3a3a3f?text=%20" alt="" loading="lazy" width="1600" height="1000">
+    <div class="hero-scrim"></div>
+    <div class="case-content container">
+      <span class="eyebrow">Case study — law firm</span>
+      <p class="case-stat"><!-- PLACEHOLDER STAT --> Fixed a broken CTA that had been pointing to a 404 page for months — recovered an estimated 12 leads a month.</p>
+      <a href="#contact" class="btn">View case</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="band-dark" id="process">
+  <div class="container">
+    <span class="eyebrow">How it works</span>
+    <h2 style="margin-bottom: 48px;">A short, direct process.</h2>
+    <div class="process-grid">
+      <div class="process-step">
+        <span class="process-index">01 — Audit</span>
+        <p><!-- PLACEHOLDER COPY --> A full technical and conversion audit of what's actually happening on your site — not a template checklist.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-index">02 — Build / Fix</span>
+        <p><!-- PLACEHOLDER COPY --> The fixes get built — by the same person who diagnosed them, so nothing is lost in translation.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-index">03 — Launch &amp; Monitor</span>
+        <p><!-- PLACEHOLDER COPY --> Site goes live, then gets watched. If something breaks or slows down, it gets caught before it costs you a lead.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOUNDER BAR ============ -->
+<section class="band-soft" id="about">
+  <div class="container founder-grid">
+    <div class="founder-photo">
+      <!-- PLACEHOLDER IMAGE: Founder headshot, square, 440x440px. Replace with a real photo of Nahian. -->
+      <img src="https://placehold.co/440x440/0a0a0a/3a3a3f?text=%20" alt="Nahian" loading="lazy" width="440" height="440">
+    </div>
+    <div class="founder-bio">
+      <span class="eyebrow">Who's behind this</span>
+      <p><!-- PLACEHOLDER COPY --> Nahian builds and optimizes WordPress sites for practices and home service businesses that are tired of paying agency rates for work an agency junior handles. Every site is built, tested, and maintained by the same person you talk to.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING CTA ============ -->
+<section class="band-dark closing" id="contact">
+  <div class="container">
+    <span class="eyebrow">Get started</span>
+    <h2>A site that loads fast and converts — built by the person who fixes it.</h2>
+    <div class="btn-row" style="margin-top: 32px;">
+      <a href="mailto:hello@nstack.co" class="btn on-light">Email Nahian</a>
+      <a href="https://wa.me/10000000000" class="btn">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container footer-row">
+    <span>Nahian — WordPress Development &amp; CRO</span>
+    <span><a href="mailto:hello@nstack.co">hello@nstack.co</a> &middot; <a href="tel:+10000000000">Call</a></span>
+    <span>&copy; 2026 Nahian. All rights reserved.</span>
+  </div>
+</footer>
+
+<!-- Analytics placeholder — deferred, no third-party scripts loaded by default
+<script defer src="https://plausible.io/js/script.js" data-domain="nstack.co"></script>
+-->
+
+<script>
+(function () {
+  var toggle = document.getElementById('navToggle');
+  var flyout = document.getElementById('flyout');
+  var closeBtn = document.getElementById('flyoutClose');
+  var backdrop = document.getElementById('backdrop');
+  var links = flyout.querySelectorAll('a, button');
+  var lastFocused = null;
+
+  function openFlyout() {
+    lastFocused = document.activeElement;
+    flyout.classList.add('open');
+    backdrop.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('no-scroll');
+    closeBtn.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function closeFlyout() {
+    flyout.classList.remove('open');
+    backdrop.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('no-scroll');
+    document.removeEventListener('keydown', onKeydown);
+    if (lastFocused) lastFocused.focus();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') {
+      closeFlyout();
+      return;
+    }
+    if (e.key === 'Tab') {
+      var focusable = Array.prototype.filter.call(links, function (el) {
+        return el.offsetParent !== null;
       });
-    });
-  </script>
+      if (focusable.length === 0) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  toggle.addEventListener('click', function () {
+    var isOpen = flyout.classList.contains('open');
+    if (isOpen) { closeFlyout(); } else { openFlyout(); }
+  });
+
+  closeBtn.addEventListener('click', closeFlyout);
+  backdrop.addEventListener('click', closeFlyout);
+
+  flyout.querySelectorAll('.flyout-link').forEach(function (link) {
+    link.addEventListener('click', closeFlyout);
+  });
+})();
+</script>
+
 </body>
 </html>
